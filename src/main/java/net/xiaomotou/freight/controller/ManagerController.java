@@ -10,7 +10,7 @@ public class ManagerController {
     @RequestMapping("/")
     public String getJson(){
 
-        return "{msg:\"这是一个json测试\"}";
+        return "{msg:\"这是一个json测试2\"}";
     }
 
 }
