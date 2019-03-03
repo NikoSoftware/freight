@@ -30,11 +30,12 @@ public class ManagerController {
         hashMap.put("secret","1f3d234e529e5c8ce543bcaffeaffe7e");
         hashMap.put("js_code",code);
         hashMap.put("grant_type","authorization_code");
-        String data = "a";
+        String data = "";
         try {
             UrlResult urlResult = HttpUtils.sendGet(wechatHost,null,hashMap,"utf_8");
             if(urlResult.getStatusCode()== 200){
                 data = urlResult.getHtmlContent();
+                int len = data.length();
             }else{
                 data ="status:"+urlResult.getStatusCode();
             }

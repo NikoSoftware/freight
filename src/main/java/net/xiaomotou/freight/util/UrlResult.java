@@ -8,6 +8,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class UrlResult {
      * Logger for this class
      */
     private static final Logger logger = LoggerFactory.getLogger(UrlResult.class);
-    public static final String ENCODING_UTF_8 ="utf_8";
+    public static final String ENCODING_UTF_8 = "utf-8";
 
     private String cookie;
     private int statusCode;
@@ -136,9 +137,7 @@ public class UrlResult {
                     while ((n = is.read(buffer)) >= 0) {
                         output.write(buffer, 0, n);
                     }
-                    responseContent = output.toString();
-                    //去除编码
-                   // responseContent = output.toString(encoding);
+                    responseContent = output.toString(encoding);
                     // responseContent=new
                     // String(responseContent.getBytes("utf-8"),"gbk");
                 }
