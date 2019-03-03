@@ -88,13 +88,28 @@
             <version>1.2.32</version>
         </dependency>
 
+        <!--redis配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!-- freemarker 模板引擎 -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
         </dependency>
 
+        <!--网络请求-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.7</version>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <finalName>freight</finalName>
