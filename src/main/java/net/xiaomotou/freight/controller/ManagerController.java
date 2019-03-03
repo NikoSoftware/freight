@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -32,7 +33,11 @@ public class ManagerController {
         String data = "a";
         try {
             UrlResult urlResult = HttpUtils.sendGet(wechatHost,null,hashMap,"utf_8");
-            data = urlResult.getHtmlContent();
+            if(urlResult.getStatusCode()== 200){
+                data = urlResult.getHtmlContent();
+            }else{
+                data ="status:"+urlResult.getStatusCode();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
