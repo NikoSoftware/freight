@@ -38,12 +38,11 @@ public class HttpUtils {
      * @param url      请求的地址
      * @param headers  请求的头部信息
      * @param params   请求的参数
-     * @param encoding 字符编码
      * @return
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public static UrlResult sendGet(String url, Map<String, String> headers, Map<String, String> params, String encoding,
+    public static UrlResult sendGet(String url, Map<String, String> headers, Map<String, String> params,
                                     boolean duan) throws ClientProtocolException, IOException {
         url = url + (null == params ? "" : assemblyParameter(params));
         HttpGet hp = new HttpGet(url);
@@ -61,9 +60,9 @@ public class HttpUtils {
         return result;
     }
 
-    public static UrlResult sendGet(String url, Map<String, String> headers, Map<String, String> params, String encoding)
+    public static UrlResult sendGet(String url, Map<String, String> headers, Map<String, String> params)
             throws ClientProtocolException, IOException {
-        return sendGet(url, headers, params, encoding, false);
+        return sendGet(url, headers, params,false);
     }
 
     /**
@@ -150,7 +149,7 @@ public class HttpUtils {
     public static void main(String[] args) {
         Map<String, String> param = new HashMap<String, String>();
         try {
-            UrlResult result = HttpUtils.sendGet("http://www.baidu.com", param, param, "utf-8");
+            UrlResult result = HttpUtils.sendGet("http://www.baidu.com", param, param);
             // HttpUtils.u
             String str = result.getHtml(result, "utf-8");
             System.out.println(str);

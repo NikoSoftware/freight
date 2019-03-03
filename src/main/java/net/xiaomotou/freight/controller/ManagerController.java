@@ -1,6 +1,7 @@
 package net.xiaomotou.freight.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import net.xiaomotou.freight.redis.RedisUtil;
 import net.xiaomotou.freight.util.HttpUtils;
 import net.xiaomotou.freight.util.UrlResult;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -32,7 +34,7 @@ public class ManagerController {
         hashMap.put("grant_type","authorization_code");
         String data = "";
         try {
-            UrlResult urlResult = HttpUtils.sendGet(wechatHost,null,hashMap,"utf_8");
+            UrlResult urlResult = HttpUtils.sendGet(wechatHost,null,hashMap);
             if(urlResult.getStatusCode()== 200){
                 data = urlResult.getHtmlContent();
                 int len = data.length();
@@ -42,9 +44,11 @@ public class ManagerController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println(code);
+        System.out.println(data);
        // redisUtil.set("time",new Date(),100);
         return data;
+
     }
 
 }

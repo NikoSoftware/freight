@@ -137,7 +137,7 @@ public class UrlResult {
                     while ((n = is.read(buffer)) >= 0) {
                         output.write(buffer, 0, n);
                     }
-                    responseContent = output.toString(encoding);
+                    responseContent = output.toString("utf-8");
                     // responseContent=new
                     // String(responseContent.getBytes("utf-8"),"gbk");
                 }
