@@ -1,10 +1,12 @@
 package net.xiaomotou.freight.priceVersion.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * <p>
@@ -14,14 +16,13 @@ import java.io.Serializable;
  * @author niko
  * @since 2019-03-04
  */
-public class PriceVersion implements Serializable {
+public class PriceVersionInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 版本号
      */
-    @TableId(value = "versionId", type = IdType.AUTO)
     private Integer versionId;
 
     /**
@@ -32,28 +33,24 @@ public class PriceVersion implements Serializable {
     /**
      * 活动体积集合
      */
-    private String volumes;
+    private ArrayList<KeyValue> volumes;
+
 
     /**
      * 活动重量集合
      */
-    private String weights;
+    private ArrayList<KeyValue> weights;
 
     private LocalDateTime createTime;
 
-    @TableField("curVolume")
     private Double curVolume;
 
-    @TableField("curWeight")
     private Double curWeight;
 
-    @TableField("curPrice")
     private Double curPrice;
 
-    @TableField("toVolume")
     private Double toVolume;
 
-    @TableField("toWeight")
     private Double toWeight;
 
     public Integer getVersionId() {
@@ -67,22 +64,24 @@ public class PriceVersion implements Serializable {
         return num;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-    public String getVolumes() {
+    public ArrayList<KeyValue> getVolumes() {
         return volumes;
     }
 
-    public void setVolumes(String volumes) {
+    public void setVolumes(ArrayList<KeyValue> volumes) {
         this.volumes = volumes;
     }
-    public String getWeights() {
+
+    public ArrayList<KeyValue> getWeights() {
         return weights;
     }
 
-    public void setWeights(String weights) {
+    public void setWeights(ArrayList<KeyValue> weights) {
         this.weights = weights;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
     public LocalDateTime getCreateTime() {
         return createTime;
@@ -127,19 +126,4 @@ public class PriceVersion implements Serializable {
         this.toWeight = toWeight;
     }
 
-    @Override
-    public String toString() {
-        return "PriceVersion{" +
-        "versionId=" + versionId +
-        ", num=" + num +
-        ", volumes=" + volumes +
-        ", weights=" + weights +
-        ", createTime=" + createTime +
-        ", curVolume=" + curVolume +
-        ", curWeight=" + curWeight +
-        ", curPrice=" + curPrice +
-        ", toVolume=" + toVolume +
-        ", toWeight=" + toWeight +
-        "}";
-    }
 }

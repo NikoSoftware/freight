@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author niko
- * @since 2019-02-24
+ * @since 2019-03-04
  */
 @Service
 public class PriceVersionServiceImpl extends ServiceImpl<PriceVersionMapper, PriceVersion> implements IPriceVersionService {

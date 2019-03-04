@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author niko
- * @since 2019-02-24
+ * @since 2019-03-04
  */
 public interface PriceVersionMapper extends BaseMapper<PriceVersion> {
 

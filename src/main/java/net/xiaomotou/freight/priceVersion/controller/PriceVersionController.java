@@ -3,7 +3,6 @@ package net.xiaomotou.freight.priceVersion.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,20 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author niko
- * @since 2019-02-24
+ * @since 2019-03-04
  */
 @RestController
-@RequestMapping("/priceVersion")
+@RequestMapping("/priceVersion/price-version")
 public class PriceVersionController {
-
-    @ResponseBody
-    @RequestMapping("/getAllPriceVersion")
-    public String getAllPriceVersion(){
-
-
-
-        return "{这是一条数据}";
-    }
-
 
 }
