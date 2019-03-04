@@ -41,7 +41,7 @@ public class PoUser implements Serializable {
     /**
      * 管理员级别
      */
-    private Integer administrator;
+    private Integer administrator=0;
 
     public String getOpenId() {
         return openId;

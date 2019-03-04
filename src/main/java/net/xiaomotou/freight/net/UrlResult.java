@@ -1,4 +1,4 @@
-package net.xiaomotou.freight.util;
+package net.xiaomotou.freight.net;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,7 +8,6 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +136,7 @@ public class UrlResult {
                     while ((n = is.read(buffer)) >= 0) {
                         output.write(buffer, 0, n);
                     }
-                    responseContent = output.toString("utf-8");
+                    responseContent = output.toString(encoding);
                     // responseContent=new
                     // String(responseContent.getBytes("utf-8"),"gbk");
                 }

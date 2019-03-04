@@ -1,4 +1,4 @@
-package net.xiaomotou.freight.util;
+package net.xiaomotou.freight.net;
 
 import java.io.IOException;
 import java.util.ArrayList;
