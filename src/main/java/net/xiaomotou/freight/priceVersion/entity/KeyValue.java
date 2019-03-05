@@ -6,6 +6,7 @@ public class KeyValue{
     private Double key;
     private Double value;
     private Double rate;
+    private String bgc;
     DecimalFormat df = new DecimalFormat("#.00");
     public Double getRate() {
         return rate;
@@ -32,5 +33,11 @@ public class KeyValue{
         this.value = value;
     }
 
+    public String getBgc() {
+        return bgc;
+    }
 
+    public void setBgc(String bgc) {
+        this.bgc = bgc;
+    }
 }

@@ -123,11 +123,30 @@ public class ManagerController {
         ArrayList<KeyValue> volumeList = new ArrayList<>();
         HashMap<Double, Double> mapVolume = (HashMap<Double, Double>) JSON
                 .parseObject(priceVersion.getVolumes(),new TypeReference<Map<Double, Double>>() {});
+        int flag = 0;
         for (Double keys : mapVolume.keySet()) {
             KeyValue keyValue = new KeyValue();
             keyValue.setKey(keys);
             keyValue.setRate(keys*100/priceInfo.getToVolume());
             keyValue.setValue(mapVolume.get(keys));
+            switch (flag){
+                case 0:
+                    keyValue.setBgc("#DCDCDC");
+                    break;
+                case 1:
+                    keyValue.setBgc("#D3D3D3");
+                    break;
+                case 2:
+                    keyValue.setBgc("#C0C0C0");
+                    break;
+                case 3:
+                    keyValue.setBgc("#A9A9A9");
+                    break;
+                case 4:
+                    keyValue.setBgc("#808080");
+                    break;
+            }
+            flag++;
             volumeList.add(keyValue);
         }
         volumeList.sort((o1, o2) -> (int) ((o1.getKey() - o2.getKey()) * 100));
