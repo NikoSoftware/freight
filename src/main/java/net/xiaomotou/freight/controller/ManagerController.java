@@ -93,10 +93,9 @@ public class ManagerController {
     public String addVersion() {
 
         HashMap<Double, Double> hashMap = new HashMap<>();
-        hashMap.put(30.5, 120.5);
+        hashMap.put(0d, 120.5);
         hashMap.put(15.5, 100.4);
         hashMap.put(50.5, 100.4);
-        hashMap.put(80.5, 90.4);
         hashMap.put(120.0, 60.4);
 
         String data = JSON.toJSONString(hashMap);
@@ -119,38 +118,34 @@ public class ManagerController {
         priceInfo.setToVolume(priceVersion.getToVolume());
         priceInfo.setCurPrice(priceVersion.getCurPrice());
         priceInfo.setCurVolume(priceVersion.getCurVolume());
+        priceInfo.setCurWeight(priceVersion.getCurWeight());
         priceInfo.setCreateTime(priceInfo.getCreateTime());
         ArrayList<KeyValue> volumeList = new ArrayList<>();
         HashMap<Double, Double> mapVolume = (HashMap<Double, Double>) JSON
                 .parseObject(priceVersion.getVolumes(),new TypeReference<Map<Double, Double>>() {});
-        int flag = 0;
         for (Double keys : mapVolume.keySet()) {
             KeyValue keyValue = new KeyValue();
             keyValue.setKey(keys);
             keyValue.setRate(keys*100/priceInfo.getToVolume());
             keyValue.setValue(mapVolume.get(keys));
-            switch (flag){
-                case 0:
-                    keyValue.setBgc("#DCDCDC");
-                    break;
-                case 1:
-                    keyValue.setBgc("#D3D3D3");
-                    break;
-                case 2:
-                    keyValue.setBgc("#C0C0C0");
-                    break;
-                case 3:
-                    keyValue.setBgc("#A9A9A9");
-                    break;
-                case 4:
-                    keyValue.setBgc("#808080");
-                    break;
-            }
-            flag++;
             volumeList.add(keyValue);
         }
         volumeList.sort((o1, o2) -> (int) ((o1.getKey() - o2.getKey()) * 100));
+        double fv = 0d;
+        for (int i = 0; i < volumeList.size(); i++) {
+            KeyValue keyValue = volumeList.get(i);
+            if(i==0){
+                fv = keyValue.getRate();
+                continue;
+            }else{
+                double fz = keyValue.getRate();
+                volumeList.get(i).setRate(keyValue.getRate()-fv);
+                fv = fz;
+            }
+        }
         priceInfo.setVolumes(volumeList);
+
+        //重量
 
         ArrayList<KeyValue> weightList = new ArrayList<>();
         HashMap<Double, Double> weightMap = (HashMap<Double, Double>) JSON
@@ -163,6 +158,19 @@ public class ManagerController {
             weightList.add(keyValue);
         }
         weightList.sort((o1, o2) -> (int) ((o1.getKey() - o2.getKey()) * 100));
+
+        double fw = 0d;
+        for (int i = 0; i < weightList.size(); i++) {
+            KeyValue keyValue = weightList.get(i);
+            if(i==0){
+                fw = keyValue.getRate();
+                continue;
+            }else{
+                double fz = keyValue.getRate();
+                weightList.get(i).setRate(keyValue.getRate()-fw);
+                fw = fz;
+            }
+        }
         priceInfo.setWeights(weightList);
 
         return JSON.toJSONString(priceInfo);
