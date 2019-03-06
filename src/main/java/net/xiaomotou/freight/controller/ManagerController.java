@@ -5,7 +5,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import net.xiaomotou.freight.net.HttpUtils;
 import net.xiaomotou.freight.net.ResultModel;
+import net.xiaomotou.freight.net.UrlResult;
+import net.xiaomotou.freight.poOrder.entity.PoOrder;
+import net.xiaomotou.freight.poOrder.mapper.PoOrderMapper;
 import net.xiaomotou.freight.poUser.entity.PoUser;
 import net.xiaomotou.freight.poUser.entity.WechartOpenId;
 import net.xiaomotou.freight.poUser.mapper.PoUserMapper;
@@ -14,8 +18,6 @@ import net.xiaomotou.freight.priceVersion.entity.PriceVersion;
 import net.xiaomotou.freight.priceVersion.entity.PriceVersionInfo;
 import net.xiaomotou.freight.priceVersion.mapper.PriceVersionMapper;
 import net.xiaomotou.freight.redis.RedisUtil;
-import net.xiaomotou.freight.net.HttpUtils;
-import net.xiaomotou.freight.net.UrlResult;
 import org.apache.http.util.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -39,6 +45,9 @@ public class ManagerController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private PoOrderMapper poOrderMapper;
 
     @RequestMapping(value = "/getWeChart", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String setWechatCode(@NotNull String code, @NotNull String nickName, String avatarUrl, String gender) {
@@ -106,10 +115,8 @@ public class ManagerController {
 
     @RequestMapping(value = "/getVersion", method = RequestMethod.GET)
     public String getVersion() {
-
         QueryWrapper<PriceVersion> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("versionId");
-
         PriceVersion priceVersion = priceVersionMapper.selectOne(queryWrapper);
         PriceVersionInfo priceInfo = new PriceVersionInfo();
         priceInfo.setVersionId(priceVersion.getVersionId());
@@ -144,9 +151,7 @@ public class ManagerController {
             }
         }
         priceInfo.setVolumes(volumeList);
-
         //重量
-
         ArrayList<KeyValue> weightList = new ArrayList<>();
         HashMap<Double, Double> weightMap = (HashMap<Double, Double>) JSON
                 .parseObject(priceVersion.getWeights(),new TypeReference<Map<Double, Double>>() {});
@@ -172,8 +177,49 @@ public class ManagerController {
             }
         }
         priceInfo.setWeights(weightList);
-
         return JSON.toJSONString(priceInfo);
+    }
+
+
+
+    @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
+    public String submitOrder(PoOrder poOrder) {
+
+        QueryWrapper<PriceVersion> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("versionId");
+
+        PriceVersion priceVersion = priceVersionMapper.selectOne(queryWrapper);
+        poOrder.setVersion(priceVersion.getVersionId());
+        poOrder.setStatus("0");
+        poOrder.setCreateTime(LocalDateTime.now());
+        System.out.println(poOrder.toString());
+        ResultModel resultModel = new ResultModel();
+        int count = 0;
+        try {
+            count = poOrderMapper.insert(poOrder);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(count==0){
+            resultModel.setCode(ResultModel.ERROR)
+                    .setMsg("Parameter error");
+        }else {
+            resultModel.setCode(ResultModel.OK);
+        }
+        return resultModel.toString();
+    }
+
+
+    @RequestMapping(value = "/getOrder", method = RequestMethod.GET)
+    public String getOrder(@NotNull String openId){
+        QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("openId",openId);
+        queryWrapper.orderByDesc("createTime");
+
+        List<PoOrder> priceVersionList = poOrderMapper.selectList(queryWrapper);
+
+
+        return JSON.toJSONString(priceVersionList);
     }
 
 
