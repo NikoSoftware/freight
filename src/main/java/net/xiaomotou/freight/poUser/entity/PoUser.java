@@ -1,6 +1,8 @@
 package net.xiaomotou.freight.poUser.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import org.springframework.context.annotation.Primary;
+
 import java.io.Serializable;
 
 /**

@@ -84,8 +84,9 @@ public class ManagerController {
                 poUserMapper.insert(poUser);
             } else {
                 UpdateWrapper<PoUser> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("openId",poUser);
                 poUser.setAdministrator(updateInfo.getAdministrator());
-                poUserMapper.update(poUser, updateWrapper);
+                poUserMapper.update(poUser,updateWrapper);
             }
 
             resultModel.setData(poUser);
@@ -209,7 +210,6 @@ public class ManagerController {
         return resultModel.toString();
     }
 
-
     @RequestMapping(value = "/getOrder", method = RequestMethod.GET)
     public String getOrder(@NotNull String openId){
         QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
@@ -221,6 +221,8 @@ public class ManagerController {
 
         return JSON.toJSONString(priceVersionList);
     }
+
+
 
 
 }
