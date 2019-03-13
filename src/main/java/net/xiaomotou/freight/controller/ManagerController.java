@@ -100,25 +100,73 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/addVersion") //, method = RequestMethod.POST
-    public String addVersion() {
+    public String addVersion(@NotNull Double totalVolume,@NotNull Double totalWeight,@NotNull  String volumeMap,@NotNull String weightMap ) {
 
-        HashMap<Double, Double> hashMap = new HashMap<>();
-        hashMap.put(0d, 120.5);
-        hashMap.put(15.5, 100.4);
-        hashMap.put(50.5, 100.4);
-        hashMap.put(120.0, 60.4);
+        HashMap<Double,Double>  volumeHashMap = (HashMap<Double, Double>) JSON.parseObject(volumeMap,new TypeReference<Map<Double, Double>>(){});
+        HashMap<Double,Double> weightHashMap = (HashMap<Double, Double>) JSON.parseObject(weightMap,new TypeReference<Map<Double, Double>>(){});
 
-        String data = JSON.toJSONString(hashMap);
+        PriceVersion priceVersion = new PriceVersion();
+        priceVersion.setNum(0);
+        priceVersion.setVolumes(JSON.toJSONString(volumeHashMap));
+        priceVersion.setWeights(JSON.toJSONString(weightHashMap));
+        priceVersion.setToVolume(totalVolume);
+        priceVersion.setToWeight(totalWeight);
+        priceVersion.setCurPrice(0d);
+        priceVersion.setCurVolume(0d);
+        priceVersion.setCurWeight(0d);
+        priceVersion.setCreateTime(LocalDateTime.now());
 
+        System.out.println(JSON.toJSONString(priceVersion));
 
-        return data;
+        ResultModel resultModel = new ResultModel();
+        int count = 0;
+        try {
+            count =  priceVersionMapper.insert(priceVersion);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(count==0){
+            resultModel.setCode(ResultModel.ERROR)
+                    .setMsg("Parameter error");
+        }else {
+            resultModel.setCode(ResultModel.OK);
+        }
+        return resultModel.toString();
+
     }
+
+
+    @RequestMapping(value = "/setPrice", method = RequestMethod.POST)
+    public String setPrice(@NotNull Double price){
+
+        PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
+        priceVersion.setCurPrice(price);
+
+        UpdateWrapper<PriceVersion> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("versionId",priceVersion.getVersionId());
+
+        ResultModel resultModel = new ResultModel();
+        int count = 0;
+        try {
+            count =  priceVersionMapper.update(priceVersion,updateWrapper);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(count==0){
+            resultModel.setCode(ResultModel.ERROR)
+                    .setMsg("Parameter error");
+        }else {
+            resultModel.setCode(ResultModel.OK);
+        }
+        return resultModel.toString();
+    }
+
+
 
     @RequestMapping(value = "/getVersion", method = RequestMethod.GET)
     public String getVersion() {
-        QueryWrapper<PriceVersion> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("versionId");
-        PriceVersion priceVersion = priceVersionMapper.selectOne(queryWrapper);
+
+        PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
         PriceVersionInfo priceInfo = new PriceVersionInfo();
         priceInfo.setVersionId(priceVersion.getVersionId());
         priceInfo.setNum(priceVersion.getNum());
@@ -183,13 +231,12 @@ public class ManagerController {
 
 
 
+
+
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     public String submitOrder(PoOrder poOrder) {
 
-        QueryWrapper<PriceVersion> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("versionId");
-
-        PriceVersion priceVersion = priceVersionMapper.selectOne(queryWrapper);
+        PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
         poOrder.setVersion(priceVersion.getVersionId());
         poOrder.setStatus("0");
         poOrder.setCreateTime(LocalDateTime.now());
