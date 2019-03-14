@@ -185,7 +185,7 @@ public class ManagerController {
             Double weightFlag = 0d;
             Double volumeFlag = 0d;
             for (PoOrder poOrder : poOrders) {
-                if (poOrder.getStatus().equals('1')) {
+                if (poOrder.getStatus().equals("1")) {
                     weightFlag += poOrder.getWeight();
                     volumeFlag += poOrder.getVolume();
                     count++;
