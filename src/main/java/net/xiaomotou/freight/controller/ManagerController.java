@@ -176,18 +176,22 @@ public class ManagerController {
 
         PriceVersionInfo priceInfo = new PriceVersionInfo();
         priceInfo.setVersionId(priceVersion.getVersionId());
-        priceInfo.setNum(poOrders == null ? 0 : poOrders.size());
         priceInfo.setToWeight(priceVersion.getToWeight());
         priceInfo.setToVolume(priceVersion.getToVolume());
         priceInfo.setCreateTime(priceInfo.getCreateTime());
         priceInfo.setCurPrice(priceVersion.getCurPrice());
         if (poOrders != null) {
+            Integer count = 0;
             Double weightFlag = 0d;
             Double volumeFlag = 0d;
             for (PoOrder poOrder : poOrders) {
-                weightFlag += poOrder.getWeight();
-                volumeFlag += poOrder.getVolume();
+                if (poOrder.getStatus().equals('1')) {
+                    weightFlag += poOrder.getWeight();
+                    volumeFlag += poOrder.getVolume();
+                    count++;
+                }
             }
+            priceInfo.setNum(count);
             priceInfo.setCurWeight(weightFlag);
             priceInfo.setCurVolume(volumeFlag);
 
