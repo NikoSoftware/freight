@@ -9,6 +9,7 @@ import net.xiaomotou.freight.net.HttpUtils;
 import net.xiaomotou.freight.net.ResultModel;
 import net.xiaomotou.freight.net.UrlResult;
 import net.xiaomotou.freight.poOrder.entity.PoOrder;
+import net.xiaomotou.freight.poOrder.entity.PoOrderAndUser;
 import net.xiaomotou.freight.poOrder.mapper.PoOrderMapper;
 import net.xiaomotou.freight.poUser.entity.PoUser;
 import net.xiaomotou.freight.poUser.entity.WechartOpenId;
@@ -84,9 +85,9 @@ public class ManagerController {
                 poUserMapper.insert(poUser);
             } else {
                 UpdateWrapper<PoUser> updateWrapper = new UpdateWrapper<>();
-                updateWrapper.eq("openId",poUser);
+                updateWrapper.eq("openId", poUser);
                 poUser.setAdministrator(updateInfo.getAdministrator());
-                poUserMapper.update(poUser,updateWrapper);
+                poUserMapper.update(poUser, updateWrapper);
             }
 
             resultModel.setData(poUser);
@@ -100,10 +101,12 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/addVersion") //, method = RequestMethod.POST
-    public String addVersion(@NotNull Double totalVolume,@NotNull Double totalWeight,@NotNull  String volumeMap,@NotNull String weightMap ) {
+    public String addVersion(@NotNull Double totalVolume, @NotNull Double totalWeight, @NotNull String volumeMap, @NotNull String weightMap) {
 
-        HashMap<Double,Double>  volumeHashMap = (HashMap<Double, Double>) JSON.parseObject(volumeMap,new TypeReference<Map<Double, Double>>(){});
-        HashMap<Double,Double> weightHashMap = (HashMap<Double, Double>) JSON.parseObject(weightMap,new TypeReference<Map<Double, Double>>(){});
+        HashMap<Double, Double> volumeHashMap = (HashMap<Double, Double>) JSON.parseObject(volumeMap, new TypeReference<Map<Double, Double>>() {
+        });
+        HashMap<Double, Double> weightHashMap = (HashMap<Double, Double>) JSON.parseObject(weightMap, new TypeReference<Map<Double, Double>>() {
+        });
 
         PriceVersion priceVersion = new PriceVersion();
         priceVersion.setNum(0);
@@ -121,14 +124,14 @@ public class ManagerController {
         ResultModel resultModel = new ResultModel();
         int count = 0;
         try {
-            count =  priceVersionMapper.insert(priceVersion);
-        }catch (Exception e){
+            count = priceVersionMapper.insert(priceVersion);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(count==0){
+        if (count == 0) {
             resultModel.setCode(ResultModel.ERROR)
                     .setMsg("Parameter error");
-        }else {
+        } else {
             resultModel.setCode(ResultModel.OK);
         }
         return resultModel.toString();
@@ -137,52 +140,67 @@ public class ManagerController {
 
 
     @RequestMapping(value = "/setPrice", method = RequestMethod.POST)
-    public String setPrice(@NotNull Double price){
+    public String setPrice(@NotNull Double price) {
 
         PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
         priceVersion.setCurPrice(price);
 
         UpdateWrapper<PriceVersion> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("versionId",priceVersion.getVersionId());
+        updateWrapper.eq("versionId", priceVersion.getVersionId());
 
         ResultModel resultModel = new ResultModel();
         int count = 0;
         try {
-            count =  priceVersionMapper.update(priceVersion,updateWrapper);
-        }catch (Exception e){
+            count = priceVersionMapper.update(priceVersion, updateWrapper);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(count==0){
+        if (count == 0) {
             resultModel.setCode(ResultModel.ERROR)
                     .setMsg("Parameter error");
-        }else {
+        } else {
             resultModel.setCode(ResultModel.OK);
         }
         return resultModel.toString();
     }
 
 
-
     @RequestMapping(value = "/getVersion", method = RequestMethod.GET)
     public String getVersion() {
 
         PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
+        QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("version", priceVersion.getVersionId());
+        List<PoOrder> poOrders = poOrderMapper.selectList(queryWrapper);
+
+
         PriceVersionInfo priceInfo = new PriceVersionInfo();
         priceInfo.setVersionId(priceVersion.getVersionId());
-        priceInfo.setNum(priceVersion.getNum());
+        priceInfo.setNum(poOrders == null ? 0 : poOrders.size());
         priceInfo.setToWeight(priceVersion.getToWeight());
         priceInfo.setToVolume(priceVersion.getToVolume());
-        priceInfo.setCurPrice(priceVersion.getCurPrice());
-        priceInfo.setCurVolume(priceVersion.getCurVolume());
-        priceInfo.setCurWeight(priceVersion.getCurWeight());
         priceInfo.setCreateTime(priceInfo.getCreateTime());
+        priceInfo.setCurPrice(priceVersion.getCurPrice());
+        if (poOrders != null) {
+            Double weightFlag = 0d;
+            Double volumeFlag = 0d;
+            for (PoOrder poOrder : poOrders) {
+                weightFlag += poOrder.getWeight();
+                volumeFlag += poOrder.getVolume();
+            }
+            priceInfo.setCurWeight(weightFlag);
+            priceInfo.setCurVolume(volumeFlag);
+
+        }
+
         ArrayList<KeyValue> volumeList = new ArrayList<>();
         HashMap<Double, Double> mapVolume = (HashMap<Double, Double>) JSON
-                .parseObject(priceVersion.getVolumes(),new TypeReference<Map<Double, Double>>() {});
+                .parseObject(priceVersion.getVolumes(), new TypeReference<Map<Double, Double>>() {
+                });
         for (Double keys : mapVolume.keySet()) {
             KeyValue keyValue = new KeyValue();
             keyValue.setKey(keys);
-            keyValue.setRate(keys*100/priceInfo.getToVolume());
+            keyValue.setRate(keys * 100 / priceInfo.getToVolume());
             keyValue.setValue(mapVolume.get(keys));
             volumeList.add(keyValue);
         }
@@ -190,12 +208,12 @@ public class ManagerController {
         double fv = 0d;
         for (int i = 0; i < volumeList.size(); i++) {
             KeyValue keyValue = volumeList.get(i);
-            if(i==0){
+            if (i == 0) {
                 fv = keyValue.getRate();
                 continue;
-            }else{
+            } else {
                 double fz = keyValue.getRate();
-                volumeList.get(i).setRate(keyValue.getRate()-fv);
+                volumeList.get(i).setRate(keyValue.getRate() - fv);
                 fv = fz;
             }
         }
@@ -203,11 +221,12 @@ public class ManagerController {
         //重量
         ArrayList<KeyValue> weightList = new ArrayList<>();
         HashMap<Double, Double> weightMap = (HashMap<Double, Double>) JSON
-                .parseObject(priceVersion.getWeights(),new TypeReference<Map<Double, Double>>() {});
+                .parseObject(priceVersion.getWeights(), new TypeReference<Map<Double, Double>>() {
+                });
         for (Double keys : weightMap.keySet()) {
             KeyValue keyValue = new KeyValue();
             keyValue.setKey(keys);
-            keyValue.setRate(keys*100/priceInfo.getToWeight());
+            keyValue.setRate(keys * 100 / priceInfo.getToWeight());
             keyValue.setValue(weightMap.get(keys));
             weightList.add(keyValue);
         }
@@ -216,21 +235,18 @@ public class ManagerController {
         double fw = 0d;
         for (int i = 0; i < weightList.size(); i++) {
             KeyValue keyValue = weightList.get(i);
-            if(i==0){
+            if (i == 0) {
                 fw = keyValue.getRate();
                 continue;
-            }else{
+            } else {
                 double fz = keyValue.getRate();
-                weightList.get(i).setRate(keyValue.getRate()-fw);
+                weightList.get(i).setRate(keyValue.getRate() - fw);
                 fw = fz;
             }
         }
         priceInfo.setWeights(weightList);
         return JSON.toJSONString(priceInfo);
     }
-
-
-
 
 
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
@@ -245,22 +261,22 @@ public class ManagerController {
         int count = 0;
         try {
             count = poOrderMapper.insert(poOrder);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(count==0){
+        if (count == 0) {
             resultModel.setCode(ResultModel.ERROR)
                     .setMsg("Parameter error");
-        }else {
+        } else {
             resultModel.setCode(ResultModel.OK);
         }
         return resultModel.toString();
     }
 
     @RequestMapping(value = "/getOrder", method = RequestMethod.GET)
-    public String getOrder(@NotNull String openId){
+    public String getOrder(@NotNull String openId) {
         QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("openId",openId);
+        queryWrapper.eq("openId", openId);
         queryWrapper.orderByDesc("createTime");
 
         List<PoOrder> priceVersionList = poOrderMapper.selectList(queryWrapper);
@@ -268,20 +284,40 @@ public class ManagerController {
     }
 
     @RequestMapping(value = "/managerAllOrder", method = RequestMethod.GET)
-    public String managerAllOrder(){
+    public String managerAllOrder() {
 
         PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
 
         QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("version",priceVersion.getVersionId());
+        queryWrapper.eq("version", priceVersion.getVersionId());
         queryWrapper.orderByDesc("createTime");
 
-        List<PoOrder> priceVersionList = poOrderMapper.selectList(queryWrapper);
-
+        List<PoOrderAndUser> priceVersionList = poOrderMapper.getPoOrderAndUser(priceVersion.getVersionId());
         return JSON.toJSONString(priceVersionList);
     }
 
 
+    @RequestMapping(value = "/optionsOrderManager", method = RequestMethod.POST)
+    public String optionsOrderManager(Integer id, String status) {
+        ResultModel resultModel = new ResultModel();
+
+        if (id == null || TextUtils.isEmpty(status) || !(status.equals("1") || status.equals("2") || status.equals("0"))) {
+            resultModel.setCode(ResultModel.ERROR);
+            resultModel.setMsg("Parameter error");
+            return resultModel.toString();
+        }
+
+        try {
+            poOrderMapper.updateStatus(id, status);
+            resultModel.setCode(ResultModel.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultModel.setCode(ResultModel.ERROR)
+                    .setMsg("Parameter error");
+        }
+
+        return resultModel.toString();
+    }
 
 
 }

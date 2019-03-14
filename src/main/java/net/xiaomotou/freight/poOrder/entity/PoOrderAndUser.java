@@ -1,24 +1,11 @@
 package net.xiaomotou.freight.poOrder.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.io.Serializable;
-
-/**
- * <p>
- * 
- * </p>
- *
- * @author niko
- * @since 2019-03-13
- */
-@TableName("po_order")
-public class PoOrder implements Serializable {
-
+public class PoOrderAndUser {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -72,6 +59,29 @@ public class PoOrder implements Serializable {
     @TableField("createTime")
     private LocalDateTime createTime;
 
+
+    /**
+     * 用户名
+     */
+    @TableField("nickName")
+    private String nickName;
+
+    /**
+     * 用户头像
+     */
+    @TableField("avatarUrl")
+    private String avatarUrl;
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 管理员级别
+     */
+    private Integer administrator=0;
+
     public Integer getId() {
         return id;
     }
@@ -79,6 +89,7 @@ public class PoOrder implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getOpenId() {
         return openId;
     }
@@ -86,54 +97,45 @@ public class PoOrder implements Serializable {
     public void setOpenId(String openId) {
         this.openId = openId;
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(Integer administrator) {
+        this.administrator = administrator;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-    public Double getVolume() {
-        return volume;
-    }
-
-    public void setVolume(Double volume) {
-        this.volume = volume;
-    }
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
     }
 
     public String getGoodsName() {
@@ -144,9 +146,58 @@ public class PoOrder implements Serializable {
         this.goodsName = goodsName;
     }
 
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Double volume) {
+        this.volume = volume;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+
     @Override
     public String toString() {
-        return "PoOrder{" +
+        return "PoOrderAndUser{" +
                 "id=" + id +
                 ", openId='" + openId + '\'' +
                 ", name='" + name + '\'' +
@@ -157,6 +208,10 @@ public class PoOrder implements Serializable {
                 ", version=" + version +
                 ", status='" + status + '\'' +
                 ", createTime=" + createTime +
+                ", nickName='" + nickName + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", gender='" + gender + '\'' +
+                ", administrator=" + administrator +
                 '}';
     }
 }

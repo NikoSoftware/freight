@@ -1,6 +1,7 @@
 package net.xiaomotou.freight.poUser.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import org.springframework.context.annotation.Primary;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @author niko
  * @since 2019-02-24
  */
+@TableName("po_user")
 public class PoUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
