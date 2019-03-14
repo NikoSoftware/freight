@@ -255,6 +255,10 @@ public class ManagerController {
         for (int i = 0; i <4 ; i++) {
             ImageModel imageModel = new ImageModel();
             imageModel.setImgPath("/image/pexels-photo-"+(i+1)+".jpeg");
+            if(i==0){
+                imageModel.setUrl("https://www.xiaomotou.net");
+            }
+
             list.add(imageModel);
         }
         priceInfo.setImageList(list);
