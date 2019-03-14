@@ -195,7 +195,7 @@ public class UrlResult {
     public void consume(UrlResult result) {
         try {
             HttpEntity entity = result.getHttpEntity();
-            // EntityUtils.consume(entity);
+            // EntityUtils.consume(model);
             if (entity.isStreaming()) {
                 InputStream instream = entity.getContent();
                 if (instream != null) {

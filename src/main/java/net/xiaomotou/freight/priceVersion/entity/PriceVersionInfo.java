@@ -3,6 +3,7 @@ package net.xiaomotou.freight.priceVersion.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import net.xiaomotou.freight.model.ImageModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -52,6 +53,17 @@ public class PriceVersionInfo implements Serializable {
     private Double toVolume;
 
     private Double toWeight;
+
+
+    private ArrayList<ImageModel> imageList;
+
+    public ArrayList<ImageModel> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(ArrayList<ImageModel> imageList) {
+        this.imageList = imageList;
+    }
 
     public Integer getVersionId() {
         return versionId;

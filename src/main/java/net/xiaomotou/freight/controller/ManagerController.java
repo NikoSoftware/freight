@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import net.xiaomotou.freight.model.ImageModel;
 import net.xiaomotou.freight.net.HttpUtils;
 import net.xiaomotou.freight.net.ResultModel;
 import net.xiaomotou.freight.net.UrlResult;
@@ -194,7 +195,6 @@ public class ManagerController {
             priceInfo.setNum(count);
             priceInfo.setCurWeight(weightFlag);
             priceInfo.setCurVolume(volumeFlag);
-
         }
 
         ArrayList<KeyValue> volumeList = new ArrayList<>();
@@ -249,6 +249,20 @@ public class ManagerController {
             }
         }
         priceInfo.setWeights(weightList);
+
+        ArrayList<ImageModel> list = new ArrayList<>();
+
+        for (int i = 0; i <4 ; i++) {
+            ImageModel imageModel = new ImageModel();
+            imageModel.setImgPath("/image/pexels-photo-"+(i+1)+".jpeg");
+            if(i==0){
+                imageModel.setUrl("https://www.xiaomotou.net");
+            }
+
+            list.add(imageModel);
+        }
+        priceInfo.setImageList(list);
+
         return JSON.toJSONString(priceInfo);
     }
 
@@ -319,9 +333,21 @@ public class ManagerController {
             resultModel.setCode(ResultModel.ERROR)
                     .setMsg("Parameter error");
         }
-
         return resultModel.toString();
     }
+
+    @RequestMapping(value = "/getImageList", method = RequestMethod.GET)
+    public String getImageList(){
+        ArrayList<ImageModel> list = new ArrayList<>();
+
+        for (int i = 0; i <4 ; i++) {
+            ImageModel imageModel = new ImageModel();
+            imageModel.setImgPath("/image/pexels-photo-"+(i+1)+".jpeg");
+            list.add(imageModel);
+        }
+        return  JSON.toJSONString(list);
+    }
+
 
 
 }
