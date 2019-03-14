@@ -1,8 +1,6 @@
 package net.xiaomotou.freight.poOrder.controller;
 
 
-import net.xiaomotou.freight.poOrder.mapper.PoOrderMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author niko
- * @since 2019-02-24
+ * @since 2019-03-13
  */
 @RestController
-@RequestMapping("/poOrder")
+@RequestMapping("/poOrder/po-order")
 public class PoOrderController {
-
-    @Autowired
-    PoOrderMapper poOrderMapper;
-
 
 }

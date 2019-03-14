@@ -264,7 +264,19 @@ public class ManagerController {
         queryWrapper.orderByDesc("createTime");
 
         List<PoOrder> priceVersionList = poOrderMapper.selectList(queryWrapper);
+        return JSON.toJSONString(priceVersionList);
+    }
 
+    @RequestMapping(value = "/managerAllOrder", method = RequestMethod.GET)
+    public String managerAllOrder(){
+
+        PriceVersion priceVersion = priceVersionMapper.getMaxPriceVersion();
+
+        QueryWrapper<PoOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("version",priceVersion.getVersionId());
+        queryWrapper.orderByDesc("createTime");
+
+        List<PoOrder> priceVersionList = poOrderMapper.selectList(queryWrapper);
 
         return JSON.toJSONString(priceVersionList);
     }

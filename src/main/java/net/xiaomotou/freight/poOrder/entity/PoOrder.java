@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author niko
- * @since 2019-02-24
+ * @since 2019-03-13
  */
 public class PoOrder implements Serializable {
 
@@ -35,6 +35,9 @@ public class PoOrder implements Serializable {
      */
     private String name;
 
+    @TableField("goodsName")
+    private String goodsName;
+
     /**
      * 手机号
      */
@@ -56,7 +59,7 @@ public class PoOrder implements Serializable {
     private Integer version;
 
     /**
-     * 状态
+     * 状态0，等待审核。1审核通过，2审核失败，
      */
     private String status;
 
@@ -130,18 +133,27 @@ public class PoOrder implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
     @Override
     public String toString() {
         return "PoOrder{" +
-        "id=" + id +
-        ", openId=" + openId +
-        ", name=" + name +
-        ", tel=" + tel +
-        ", volume=" + volume +
-        ", weight=" + weight +
-        ", version=" + version +
-        ", status=" + status +
-        ", createTime=" + createTime +
-        "}";
+                "id=" + id +
+                ", openId='" + openId + '\'' +
+                ", name='" + name + '\'' +
+                ", goodsName='" + goodsName + '\'' +
+                ", tel='" + tel + '\'' +
+                ", volume=" + volume +
+                ", weight=" + weight +
+                ", version=" + version +
+                ", status='" + status + '\'' +
+                ", createTime=" + createTime +
+                '}';
     }
 }
