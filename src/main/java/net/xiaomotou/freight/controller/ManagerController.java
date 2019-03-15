@@ -256,7 +256,7 @@ public class ManagerController {
             ImageModel imageModel = new ImageModel();
             imageModel.setImgPath("/image/pexels-photo-"+(i+1)+".jpeg");
 
-             imageModel.setUrl("https://www.xiaomotou.net");
+          //   imageModel.setUrl("https://www.xiaomotou.net"); 图片跳转网页
 
             list.add(imageModel);
         }
